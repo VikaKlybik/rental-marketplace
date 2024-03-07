@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <meta content="strict-origin-when-cross-origin" name="referrer">
+    <title>My account</title>
+
+    <style>
+        body {
+            margin-top: 20px;
+            background-color: #f2f6fc;
+            color: #69707a;
+        }
+
+        .img-account-profile {
+            height: 10rem;
+        }
+
+        .rounded-circle {
+            border-radius: 50% !important;
+        }
+
+        .card {
+            box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+        }
+
+        .card .card-header {
+            font-weight: 500;
+        }
+
+        .card-header:first-child {
+            border-radius: 0.35rem 0.35rem 0 0;
+        }
+
+        .card-header {
+            padding: 1rem 1.35rem;
+            margin-bottom: 0;
+            background-color: rgba(33, 40, 50, 0.03);
+            border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+        }
+
+        .form-control, .dataTable-input {
+            display: block;
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1;
+            color: #69707a;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #c5ccd6;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 0.35rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .nav-borders .nav-link.active {
+            color: #0061f2;
+            border-bottom-color: #0061f2;
+        }
+
+        .nav-borders .nav-link {
+            color: #69707a;
+            border-bottom-width: 0.125rem;
+            border-bottom-style: solid;
+            border-bottom-color: transparent;
+            padding: 0.5rem 0;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        .scrollable-section {
+            height: 300px; /* Set the desired height of the scrollable section */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 10px; /* Add padding to the content */
+        }
+    </style>
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+
+<main>
+    <div class="container-fluid px-5 mt-4">
+        <hr class="mt-0 mb-4">
+        <div class="row">
+            <div class="col-xl-4">
+                <!-- Profile picture card-->
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header">Фото профиля</div>
+                    <div class="card-body text-center">
+                        <!-- Profile picture image-->
+                        <img alt="Image" class="img-account-profile rounded-circle mb-2"
+                             crossorigin="anonymous" th:src="@{/image/{id}(id=${user.iconUrl})}">
+                        <div th:if="${ratingList.size()>0}">
+                            <span th:each="star : ${#numbers.sequence(1, userRating)}">
+                            <span class="fa fa-star" th:classappend="${userRating >= star ? 'checked' : ''}"></span>
+                            <span class="fa fa-star-half checked"
+                                  th:if="${userRating % 1 == 0.5 && userRating < star + 1}"></span>
+                                                        </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <!-- Account details card-->
+                <div class="card mb-4">
+                    <div class="card-header">Информация об аккаунте</div>
+                    <div class="card-body">
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (first name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="firstname">Имя</label>
+                                <input class="form-control" disabled id="firstname" th:field="${user.firstName}">
+                            </div>
+                            <!-- Form Group (last name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="lastname">Фамилия</label>
+                                <input class="form-control" disabled id="lastname" placeholder="Введите вашу фамилию"
+                                       th:value="${user.lastName}" type="text">
+                            </div>
+                        </div>
+
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (phone number)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="phone">Телефон</label>
+                                <input class="form-control" disabled id="phone" placeholder="+375#########"
+                                       th:value="${user.phone}"
+                                       type="tel">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="email">Адрес электронной почты</label>
+                                <input class="form-control" disabled id="email"
+                                       placeholder="Введите ваш адрес электронной почты" th:value="${user.email}"
+                                       type="text">
+                            </div>
+                        </div>
+                        <div class="row gx-3 mb-3">
+                            <div class="scrollable-section" th:if="${ratingList.size() > 0}">
+                                <h2>Комментарии других пользоватетелей</h2>
+                                <div class="d-flex flex-column comment-section">
+                                    <div class="bg-white p-2" th:each="rating: ${ratingList}">
+                                        <div class="d-flex flex-row user-info"><img class="rounded-circle"
+                                                                                    th:src="@{/image/{id}(id=${rating.user.iconUrl})}"
+                                                                                    width="40">
+                                            <div class="d-flex flex-column justify-content-start ml-2"><span
+                                                    class="d-block font-weight-bold name"
+                                                    th:text="${rating.user.firstName + ' ' + rating.user.lastName}"></span><span
+                                                    class="date text-black-50"
+                                                    th:text="${#temporals.format(rating.createdAt, 'EEE, d MMM yyyy HH:mm')}"></span>
+                                            </div>
+                                        </div>
+                                        <span th:each="star : ${#numbers.sequence(1, rating.rating)}">
+                                    <span class="fa fa-star"
+                                          th:classappend="${rating.rating >= star ? 'checked' : ''}"></span>
+                                            <!-- Check if the rating is a decimal and it is between the current star and the next one -->
+                                    <span class="fa fa-star-half checked"
+                                          th:if="${rating.rating > star - 1 &amp;&amp; rating.rating < star}"></span>
+                                </span>
+                                        <div class="mt-2">
+                                            <p class="comment-text" th:text="${rating.comment}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+</body>
+
+</html>

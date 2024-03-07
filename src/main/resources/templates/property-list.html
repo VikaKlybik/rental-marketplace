@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <title>Наши объявления</title>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <style>
+        #myMap {
+            width: 100%;
+            height: 600px;
+        }
+
+        .collapsible {
+            background-color: #777;
+            color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #555;
+        }
+
+        .content {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: #f1f1f1;
+        }
+    </style>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        ymaps.ready(function () {
+            ymaps.geolocation.get().then(function (result) {
+                var location = result.geoObjects.get(0).geometry.getCoordinates();
+
+                const dataList = /*[[${properties}]]*/ []
+                const link = /*[[@{/property/}]]*/ ''
+                /* if (dataList.length != 0) {
+                     location = [dataList[0].geolocationData.latitude, dataList[0].geolocationData.longitude]
+                 }*/
+                var myMap = new ymaps.Map('myMap', {
+                    center: location,
+                    zoom: 15
+                });
+                console.log(link)
+                for (let i = 0; i < dataList.length; i++) {
+                    let placeMark = new ymaps.Placemark([dataList[i].geolocationData.latitude, dataList[i].geolocationData.longitude], {
+                        hintContent: dataList[i].geolocationData.address,
+                        preset: 'islands#blueDotIcon' // выбор стиля метки
+                    });
+                    const propertyLink = link + dataList[i].id
+                    placeMark.events.add('click', function (event) {
+                        let balloonContent = '<a href="' + propertyLink + '">Перейти к месту</a>';
+                        event.get('target').properties.set('balloonContentBody', balloonContent);
+                    });
+                    myMap.geoObjects.add(placeMark);
+                }
+
+            });
+        });
+        /*]]>*/
+    </script>
+
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+
+<main>
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header">
+        <h1 class="display-3 text-uppercase text-white mb-3">Наши объявления</h1>
+        <div class="d-inline-flex text-white">
+            <h6 class="text-uppercase m-0"><a class="text-white" th:href="@{/home}">Главная</a></h6>
+            <h6 class="text-body m-0 px-3">/</h6>
+            <h6 class="text-uppercase text-body m-0">Наши объявления</h6>
+        </div>
+    </div>
+    <!-- Page Header Start -->
+
+
+    <!-- Rent A Car Start -->
+    <div class="container-fluid py-5">
+        <div class="container pt-5 pb-3">
+            <h1 class="display-4 text-uppercase text-center mb-5">Найди своё объявление</h1>
+            <div class="m-2" id="myMap"></div>
+            <th:block sec:authorize="hasAnyAuthority('USER', 'ADMIN', 'MANAGER')">
+                <a class="link" th:href="@{/property/create}">Создание объявления</a>
+            </th:block>
+            <button class="collapsible" type="button">Раскрыть фильтрацию</button>
+            <div class="content" id="filter">
+                <form class="m-4" method="get">
+                    <div class="form-group">
+                        <label for="country">Страна:</label>
+                        <select class="form-control" id="country" name="country">
+                            <option value="">Выберите страну</option>
+                            <option th:each="county: ${countries}" th:selected="${county.equals(propertyFilterParameter.country)}" th:text="${county}" th:value="${county}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Город:</label>
+                        <select class="form-control" id="city" name="city">
+                            <option value="">Выберите город</option>
+                            <option th:each="city: ${cities}" th:text="${city}" th:value="${city}" th:selected="${city.equals(propertyFilterParameter.city)}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="startPrice">Минимальная цена:</label>
+                        <input class="form-control" id="startPrice" name="startPrice"
+                               placeholder="Введите минимальную цену"
+                               type="number"
+                               th:min="0"
+                               th:value="${propertyFilterParameter.startPrice == null? '':propertyFilterParameter.startPrice}"
+                               step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="endPrice">Максимальная цена:</label>
+                        <input class="form-control" th:max="${maxPrice}" th:value="${propertyFilterParameter.endPrice == null? maxPrice :propertyFilterParameter.endPrice}" id="endPrice" name="endPrice" step="0.01" placeholder="Введите максимальную цену"
+                               type="number">
+                    </div>
+                    <div class="form-group">
+                        <label for="propertyCategoryId">Категория:</label>
+                        <select class="form-control" id="propertyCategoryId" name="propertyCategoryId">
+                            <option value="">Выберите категорию</option>
+                            <option th:each="propertyCategory: ${propertyCategories}" th:text="${propertyCategory.name}" th:value="${propertyCategory.id}" th:selected="${propertyCategory.id.equals(propertyFilterParameter.propertyCategoryId)}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group text-right"> <!-- Aligning the button to the right -->
+                        <a class="btn btn-primary" th:href="@{/property}">Сбросить фильтр</a>
+                        <button class="btn btn-primary" type="submit">Искать</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-2" th:each="property :${properties}">
+                    <div class="rent-item mb-4">
+                        <img alt="" class="img-fluid mb-4"
+                             th:if="${property.imageList.size()>0}"
+                             th:src="@{/image/{id}(id=${property.imageList.get(0).url})}">
+                        <img alt="" class="img-fluid mb-4"
+                             src="https://clipart-library.com/images/8cAEyXaXi.gif"
+                             th:if="${property.imageList.size() == 0}">
+                        <h4 class="text-uppercase mb-4" style="height: 70px" th:text="${property.title}"></h4>
+                        <div class="d-flex justify-content-center mb-4" style="height: 70px">
+                            <div class="px-2">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span th:text="${property.geolocationData.country + ', ' + property.geolocationData.address}"></span>
+                            </div>
+                            <div class="px-2 border-left border-right">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                <span th:text="${#temporals.format(property.createdAt, 'HH:mm dd MMM yyyy')}"></span>
+                            </div>
+                        </div>
+                        <a class="btn btn-primary px-3" th:href="@{/property/{id}(id = ${property.id})}"
+                           th:text="${property.price.toString()} + ' $'"></a>
+                    </div>
+                </div>
+                <div class="col-md-6 offset-md-3 text-center" th:if="${properties.isEmpty()}">
+                    <h1>Объявлений не найдено</h1>
+                    <p>Сейчас нету данных, которые могли бы отобразиться!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+<script>
+    var coll = document.querySelector(".collapsible");
+
+    coll.addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    })
+</script>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <title th:text="${article.title}"></title>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.25.0/format/index.js"></script>
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+<div class="container-fluid pt-5">
+    <div class="container">
+        <h1 class="display-4 text-uppercase mb-5" th:text="${article.title}"></h1>
+        <div class="entry-meta post-atribute mb-3 small fw-normal text-muted">
+			<span class="byline me-2 me-md-3">
+    				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-person me-1" viewBox="0 0 16 16">
+					  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+                    </svg><th:block th:text="${article.lastName + ' '+ article.firstName}"></th:block></span>
+				<span title="Posted on"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-pencil-square me-1" viewBox="0 0 16 16">
+				  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
+				  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
+				</svg><th:block th:text="${#temporals.format(article.createdAt, 'HH:mm dd MMMM yyyy')}"></th:block></span>
+        </div>
+        <img alt="Image" class="d-block mx-auto w-auto"
+             th:src="${article.imageUrl}">
+
+        <div class="col-lg-6 mb-4" th:utext="${article.content}">
+        </div>
+
+    </div>
+</div>
+<main>
+
+
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+</body>
+
+</html>

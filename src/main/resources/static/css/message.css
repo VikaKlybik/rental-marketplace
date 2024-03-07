@@ -1,0 +1,39 @@
+#overlay-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999999;
+    display: none;
+}
+
+#modal-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 99999990;
+    display: none;
+}
+
+#message h2 {
+    margin-top: 0;
+}
+
+#modal-message {
+    margin-top: 20px;
+}
+
+#close-modal-message {
+    display: block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}

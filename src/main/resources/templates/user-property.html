@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <title>Чат</title>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.25.0/format/index.js"></script>
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+<div class="container-fluid">
+    <div class="container pt-5 pb-3">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Загаловок объявления</th>
+                <th>Дата публикации</th>
+                <th>Категория</th>
+                <th>Цена</th>
+                <th>Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="property: ${properties}">
+                <td><a th:href="@{/property/{id}(id = ${property.id})}" th:text="${property.title}"></a></td>
+                <td th:text = "${#temporals.format(property.createdAt, 'HH:mm, yyyy-MM-dd')}"></td>
+                <td th:text="${property.propertyCategory.name}"></td>
+                <td th:text = "${property.getPrice().toString()} + ' $'"></td>
+                <td class="status-type">
+                    <input type="hidden" th:value="${property.id}" id="propertyId">
+                    <select  class="form-control" id="status" name="gearBoxType"  onchange="changeStatus(event)">
+                        <option value="AVAILABLE" th:selected="${property.propertyStatus == 'AVAILABLE'}">Активна</option>
+                        <option value="CLOSED" th:selected="${property.propertyStatus == 'CLOSED'}">Не активно</option>
+                    </select>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<main>
+
+
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+<script>
+    function changeStatus(event) {
+        event.preventDefault();
+        const currentElement = event.target;
+
+        let statusValue = currentElement.value;
+        let propertyIdValue = currentElement.closest('td').querySelector('input').value
+        let propertyChangeStatusRequest = {
+            propertyId: parseInt(propertyIdValue),
+            status: statusValue
+        }
+        fetch('/rental-properties/property/status', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(propertyChangeStatusRequest)
+        })
+            .then(response => {
+                return response.json();
+            })
+            .catch(error => {
+                document.querySelector('#message').textContent = "Ошибка обновления статуса, попробуйте ещё раз!";
+                console.log(document.querySelector('#message'))
+                document.querySelector('#overlay-message').style.display = 'block';
+                document.querySelector('#modal-message').style.display = 'block';
+            });
+    }
+</script>
+</body>
+
+</html>
