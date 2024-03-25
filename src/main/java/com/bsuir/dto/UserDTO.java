@@ -2,6 +2,7 @@ package com.bsuir.dto;
 
 import com.bsuir.entity.Role;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class UserDTO {
     @NotEmpty(message = FIELD_EMPTY)
     private String email;
     @NotEmpty(message = FIELD_EMPTY)
+    @Pattern(regexp = "\\+375\\d{9}", message = "Неправильный формат телефона!")
     private String phone;
     private String iconUrl;
     private Integer totalPropertyCount;
