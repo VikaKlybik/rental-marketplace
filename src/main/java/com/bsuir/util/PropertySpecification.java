@@ -5,7 +5,6 @@ import com.bsuir.entity.GeolocationData;
 import com.bsuir.entity.Property;
 import com.bsuir.enums.PropertyStatus;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;

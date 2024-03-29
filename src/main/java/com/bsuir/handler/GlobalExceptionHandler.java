@@ -1,15 +1,6 @@
 package com.bsuir.handler;
 
-import com.bsuir.exception.ArticleNotFoundException;
-import com.bsuir.exception.BookmarkNotFoundException;
-import com.bsuir.exception.ChatNotFoundException;
-import com.bsuir.exception.DuplicateException;
-import com.bsuir.exception.ErrorDetails;
-import com.bsuir.exception.PropertyAlreadyClosedFoundException;
-import com.bsuir.exception.PropertyCreateNotAllowException;
-import com.bsuir.exception.PropertyNotFoundException;
-import com.bsuir.exception.RoleNotFoundException;
-import com.bsuir.exception.UserNotFoundException;
+import com.bsuir.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;

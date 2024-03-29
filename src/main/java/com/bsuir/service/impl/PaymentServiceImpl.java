@@ -31,7 +31,6 @@ import static com.bsuir.constant.RentalPropertiesConstants.DefaultValue.PRICE_FO
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
 
-    private final PropertyRepository propertyRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
     @Value("${stripe.secret.key}")
