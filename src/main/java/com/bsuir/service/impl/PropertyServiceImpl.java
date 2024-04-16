@@ -1,47 +1,17 @@
 package com.bsuir.service.impl;
 
-import com.bsuir.dto.AttributeGroupRequest;
-import com.bsuir.dto.AttributeGroupResponse;
-import com.bsuir.dto.AttributeRequest;
-import com.bsuir.dto.AttributeResponse;
-import com.bsuir.dto.AttributeValueRequest;
-import com.bsuir.dto.AttributeValueResponse;
-import com.bsuir.dto.GeolocationDataRequest;
-import com.bsuir.dto.PropertyCategoryResponse;
-import com.bsuir.dto.PropertyChangeStatusRequest;
-import com.bsuir.dto.PropertyFilterParameter;
-import com.bsuir.dto.PropertyRequest;
-import com.bsuir.dto.PropertyResponse;
-import com.bsuir.entity.Attribute;
-import com.bsuir.entity.AttributeGroup;
-import com.bsuir.entity.AttributeMapper;
-import com.bsuir.entity.AttributeValue;
-import com.bsuir.entity.GeolocationData;
-import com.bsuir.entity.Property;
-import com.bsuir.entity.PropertyCategory;
-import com.bsuir.entity.User;
+import com.bsuir.dto.*;
+import com.bsuir.entity.*;
 import com.bsuir.enums.PropertyStatus;
 import com.bsuir.exception.PropertyCreateNotAllowException;
 import com.bsuir.exception.PropertyNotFoundException;
 import com.bsuir.exception.UserNotFoundException;
-import com.bsuir.mapper.AttributeGroupMapper;
-import com.bsuir.mapper.AttributeValueMapper;
-import com.bsuir.mapper.GeolocationDataMapper;
-import com.bsuir.mapper.PropertyCategoryMapper;
-import com.bsuir.mapper.PropertyMapper;
-import com.bsuir.repository.AttributeGroupRepository;
-import com.bsuir.repository.AttributeRepository;
-import com.bsuir.repository.AttributeValueRepository;
-import com.bsuir.repository.GeolocationDataRepository;
-import com.bsuir.repository.PropertyCategoryRepository;
-import com.bsuir.repository.PropertyRepository;
-import com.bsuir.repository.UserRepository;
+import com.bsuir.mapper.*;
+import com.bsuir.repository.*;
 import com.bsuir.service.PropertyService;
 import com.bsuir.service.UserService;
 import com.bsuir.util.PropertySpecification;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,13 +68,17 @@ public class PropertyServiceImpl implements PropertyService {
     public Long saveProperty(PropertyRequest propertyRequest, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
-        if(user.getAllowPropertyCount() <= 0) {
-            throw new PropertyCreateNotAllowException(username);
+        if(propertyRequest.getId() == null) {
+            if (user.getAllowPropertyCount() <= 0) {
+                throw new PropertyCreateNotAllowException(username);
+            }
         }
 
         Property property = getOrCreateProperty(propertyRequest);
-        user.setAllowPropertyCount(user.getAllowPropertyCount()-1);
-        user.setTotalPropertyCount(user.getTotalPropertyCount()+1);
+        if(propertyRequest.getId() == null) {
+            user.setAllowPropertyCount(user.getAllowPropertyCount() - 1);
+            user.setTotalPropertyCount(user.getTotalPropertyCount() + 1);
+        }
         property.setUser(user);
         property.setPropertyStatus(PropertyStatus.CLOSED);
         return propertyRepository.save(property)
@@ -166,18 +140,18 @@ public class PropertyServiceImpl implements PropertyService {
         Long attributeId = Long.parseLong(attributeValueRequest.getAttributeId());
         return attributeValueRepository.findByPropertyIdAndAttributeId(
                 id, attributeId
-                ).orElseGet(()->{
-                    Attribute attribute = new Attribute();
-                    attribute.setId(attributeId);
+        ).orElseGet(()->{
+            Attribute attribute = new Attribute();
+            attribute.setId(attributeId);
 
-                    Property property = new Property();
-                    property.setId(id);
+            Property property = new Property();
+            property.setId(id);
 
-                    return AttributeValue.builder()
-                            .attribute(attribute)
-                            .property(property)
-                            .build();
-                });
+            return AttributeValue.builder()
+                    .attribute(attribute)
+                    .property(property)
+                    .build();
+        });
     }
 
     @Override

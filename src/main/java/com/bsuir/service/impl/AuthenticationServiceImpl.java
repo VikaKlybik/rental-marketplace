@@ -9,6 +9,7 @@ import com.bsuir.entity.Bookmark;
 import com.bsuir.entity.Role;
 import com.bsuir.entity.User;
 import com.bsuir.entity.UserDetails;
+import com.bsuir.exception.DuplicateException;
 import com.bsuir.exception.RoleNotFoundException;
 import com.bsuir.exception.UserNotFoundException;
 import com.bsuir.repository.BookmarkRepository;
@@ -44,6 +45,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
+        if(userRepository.existsByUsername(request.getUsername())) {
+            throw new DuplicateException("Ошибка! Логин уже занят.");
+        }
+        if(userRepository.existsByUserDetailsEmail(request.getEmail())) {
+            throw new DuplicateException("Ошибка! Email уже занят.");
+        }
+        if(userRepository.existsByUserDetailsPhone(request.getPhone())) {
+            throw new DuplicateException("Ошибка! Телефон уже занят.");
+        }
+
         UserDetails userDetail = UserDetails.builder()
                 .email(request.getEmail())
                 .firstName(request.getFirstName())

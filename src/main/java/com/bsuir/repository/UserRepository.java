@@ -13,4 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT COUNT(u) FROM User u WHERE u.totalPropertyCount > 1")
     Integer findAllUsersCountWithMoreThanOneProperty();
+    boolean existsByUsername(String username);
+    boolean existsByUserDetailsPhone(String phone);
+    boolean existsByUserDetailsEmail(String email);
 }

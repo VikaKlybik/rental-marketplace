@@ -23,7 +23,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public List<RatingResponse> getAllRatingForUser(Long userId) {
-        List<Rating> ratingList = ratingRepository.findAllByUserId(userId);
+        List<Rating> ratingList = ratingRepository.findAllByForUserId(userId);
 
         return ratingMapper.toListOfDto(ratingList);
     }

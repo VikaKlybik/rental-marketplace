@@ -3,9 +3,11 @@ package com.bsuir.service.impl;
 import com.bsuir.dto.UserDTO;
 import com.bsuir.entity.Role;
 import com.bsuir.entity.User;
+import com.bsuir.entity.UserDetails;
 import com.bsuir.exception.UserNotFoundException;
 import com.bsuir.mapper.UserMapper;
 import com.bsuir.repository.RoleRepository;
+import com.bsuir.repository.UserDetailsRepository;
 import com.bsuir.repository.UserRepository;
 import com.bsuir.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
-
+    private final UserDetailsRepository userDetailsRepository;
     @Override
     public List<UserDTO> getAllUser() {
         List<User> userList = userRepository.findAll();
@@ -45,12 +47,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO saveUser(UserDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
-        if(user.getId() == null) {
-            user.setTotalPropertyCount(0);
-            user.setAllowPropertyCount(1);
-        }
-        return userMapper.toDto(userRepository.save(user));
+
+        User exisistingUser = userRepository.findByUsername(userDTO.getUsername())
+                .orElseThrow(()-> new UserNotFoundException(userDTO.getUsername()));
+
+        UserDetails userDetail = exisistingUser.getUserDetails();
+        userDetail.setEmail(userDTO.getEmail());
+        userDetail.setFirstName(userDTO.getFirstName());
+        userDetail.setLastName(userDTO.getLastName());
+        userDetail.setPhone(userDTO.getPhone());
+        userDetail.setIconUrl(userDTO.getIconUrl());
+        userDetailsRepository.save(userDetail);
+
+        return userMapper.toDto(userRepository.save(exisistingUser));
     }
 
     @Override
