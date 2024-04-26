@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert = "fragments/title :: headerFiles"/>
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>My account</title>
+
+    <style>
+        body{margin-top:20px;
+            background-color:#f2f6fc;
+            color:#69707a;
+        }
+        .img-account-profile {
+            height: 10rem;
+        }
+        .rounded-circle {
+            border-radius: 50% !important;
+        }
+        .card {
+            box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+        }
+        .card .card-header {
+            font-weight: 500;
+        }
+        .card-header:first-child {
+            border-radius: 0.35rem 0.35rem 0 0;
+        }
+        .card-header {
+            padding: 1rem 1.35rem;
+            margin-bottom: 0;
+            background-color: rgba(33, 40, 50, 0.03);
+            border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+        }
+        .form-control, .dataTable-input {
+            display: block;
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1;
+            color: #69707a;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #c5ccd6;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 0.35rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .nav-borders .nav-link.active {
+            color: #0061f2;
+            border-bottom-color: #0061f2;
+        }
+        .nav-borders .nav-link {
+            color: #69707a;
+            border-bottom-width: 0.125rem;
+            border-bottom-style: solid;
+            border-bottom-color: transparent;
+            padding: 0.5rem 0;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+<header th:insert = "fragments/header :: header"> </header>
+
+<main>
+    <div class="container-fluid px-5 mt-4">
+        <hr class="mt-0 mb-4">
+        <div class="row">
+            <div class="col-xl-4">
+                <!-- Profile picture card-->
+                <div class="card mb-4 mb-xl-0">
+                    <div class="card-header">Фото профиля</div>
+                    <form  th:action="@{/user-info/upload/icon-user}" id="upload-photo" method="post" enctype="multipart/form-data">
+                        <div class="card-body text-center">
+                            <!-- Profile picture image-->
+                            <img class="img-account-profile rounded-circle mb-2" th:src="@{/image/{id}(id=${user.iconUrl})}" alt="Image" crossorigin="anonymous">
+                            <!-- Profile picture help block-->
+                            <div class="small font-italic text-muted mb-4">JPG или PNG не более 5 МВ</div>
+                            <!-- Profile picture upload button-->
+                            <div class="border p-3">
+                                <input type="file" class="form-control" name="file"/>
+                                <button type="submit"  class="btn btn-primary mt-2" >Загрузить новую фотографию</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <!-- Account details card-->
+                <div class="card mb-4">
+                    <div class="card-header">Информация об аккаунте</div>
+                    <div class="card-body">
+                        <form th:object="${user}" method="post" >
+                            <input type="hidden" th:field="*{id}">
+<!--                            <input type="hidden" th:field="*{username}">-->
+                            <input type="hidden" th:field="*{iconUrl}">
+                            <input type="hidden" th:field="*{username}">
+                            <input type="hidden" th:field="*{allowPropertyCount}">
+                            <input type="hidden" th:field="*{totalPropertyCount}">
+                            <input type="hidden" th:field="*{phone}">
+                            <input type="hidden" th:field="*{email}">
+                            <input type="hidden" th:field="*{isActive}">
+                            <!-- Form Row-->
+                            <div class="row gx-3 mb-3">
+                                <!-- Form Group (first name)-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="firstname">Имя</label>
+                                    <input class="form-control" th:field="*{firstName}" id="firstName" type="text" placeholder="Введите ваше имя" >
+                                    <p class="alert alert-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
+                                </div>
+                                <!-- Form Group (last name)-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="lastname">Фамилия</label>
+                                    <input class="form-control" th:field="*{lastName}" id="lastname" type="text" placeholder="Введите вашу фамилию" >
+                                    <p class="alert alert-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                                </div>
+                            </div>
+
+                            <!-- Form Row-->
+                            <div class="row gx-3 mb-3">
+                                <!-- Form Group (phone number)-->
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="phone">Телефон</label>
+                                    <input class="form-control" th:field="*{phone}" disabled id="phone" type="tel" placeholder="+375#########" >
+                                    <p class="alert alert-danger" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small mb-1" for="email">Адрес электронной почты</label>
+                                    <input class="form-control" th:field="*{email}" disabled id="email" name="" type="text" placeholder="Введите ваш адрес электронной почты">
+                                    <p class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                                </div>
+                            </div>
+                            <!-- Save changes button-->
+                            <button class="btn btn-primary" type="submit">Сохранить изменения</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Количество публикаций</h5>
+                        <p class="card-text">Всего опубликовано: <span id="total-publications" th:text="${user.totalPropertyCount}"></span></p>
+                        <p class="card-text">Возможно ещё создать <span id="remaining-publications" th:text="${user.allowPropertyCount}"></span> публикации</p>
+                        <div>
+                            <h5>Оплатить дополнительную публикацию</h5>
+                            <form id='checkout-form' method='POST' th:action="@{/payment}">
+                                <input name='amount' th:value='${amount}' type='hidden'/>
+                                <script
+                                        class='stripe-button'
+                                        data-
+                                        data-description='Оплата публикаций'
+                                        data-locale='ru'
+                                        data-name='Rental Marketplace'
+                                        data-th-label='Оплатить'
+                                        data-zip-code='false'
+                                        src='https://checkout.stripe.com/checkout.js'
+                                        th:attr='data-key=${stripePublicKey},
+                                     data-email=${user.email},
+                                     data-amount=${amount},
+                                     data-currency=${"usd"}'
+                                        th:data-email='${user.email}'>
+                                </script>
+                            </form>
+                        </div>
+                        <a class="link" th:href="@{/property/create}">Создать новое объявление</a>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:insert = "fragments/footer :: footer"> </footer>
+<script>
+    document.getElementById('upload-photo').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let formData = new FormData(this);
+
+        fetch(event.target.getAttribute('action'), {
+            method: event.target.method,
+            body: formData
+        })
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => {
+                document.querySelector('#message').textContent = "Ошибка загрузки фото!";
+                clearForm();
+                console.log(document.querySelector('#message'))
+                document.querySelector('#overlay-message').style.display = 'block';
+                document.querySelector('#modal-message').style.display = 'block';
+                console.error(error); // Handle any errors that occur during the AJAX request
+            });
+    });
+</script>
+</body>
+
+</html>

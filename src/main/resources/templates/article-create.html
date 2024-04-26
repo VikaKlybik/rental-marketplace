@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <title>Создание статьи</title>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/2.25.0/format/index.js"></script>
+    <script referrerpolicy="origin"
+            src="https://cdn.tiny.cloud/1/jyfcrkkl7bxxr9ed1p8u15p17pl0r35cx24y05v01o7izuti/tinymce/6/tinymce.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/jyfcrkkl7bxxr9ed1p8u15p17pl0r35cx24y05v01o7izuti/tinymce/5/langs/ru.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            plugins: 'language anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            language: 'ru',
+            images_upload_url: '/rental-properties/article/image',
+            automatic_uploads: true,
+            relative_urls: false,
+            convert_urls: false,
+            remove_script_host : false,
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+        });
+    </script>
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+<div class="container-fluid pt-5" style="height: 1000px">
+    <div class="container">
+            <div class="form-group">
+                <label for="imageInput">Выберите картинку для статьи:</label>
+                <input type="file" class="form-control-file" id="imageInput" name="image" onchange="uploadImage()">
+                <input required class="form-control p-4" id="imageUrl" disabled type="text">
+            </div>
+            <button type="submit" class="btn btn-primary d-none" id="submitButton">Upload</button>
+        <form method="post" th:action="@{/article/create}" id="saveForm" onsubmit="saveArticle(event)">
+            <input required class="form-control p-4" id="title" placeholder="Введите название статьи" type="text">
+            <textarea required class="form-control p-4" id="description" placeholder="Введите краткое описание"></textarea>
+            <textarea id="content" required>
+                Начни писать своё статью!
+            </textarea>
+            <div class="col-md-6 offset-md-6 text-right mt-1">
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+<main>
+
+
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+<script>
+    const imageUrlInput = document.getElementById("imageUrl");
+    function saveArticle(event) {
+        event.preventDefault()
+        let content = tinymce.get('content').getContent();
+        let title = document.getElementById('title').value;
+        let description = document.getElementById('description').value;
+        let articleRequest =  {
+            title: title,
+            content: content,
+            imageUrl: imageUrlInput.value,
+            description: description
+        }
+        let saveForm = document.getElementById("saveForm");
+        fetch(saveForm.action, {
+            method: saveForm.method,
+            headers: {
+                'Content-Type': 'application/json' // Specify Content-Type as JSON
+            },
+            body: JSON.stringify(articleRequest)
+        })
+            .then(response => response.json())
+            .then(data => {
+                const redirectUrl = data.url; // Assuming the JSON response contains the redirect URL
+                if (redirectUrl) {
+                    window.location.href = redirectUrl; // Redirect to the new URL
+                } else {
+                    document.querySelector('#message').textContent = "Ошибка создания статьи, попробуйте ещё раз!";
+                    clearForm();
+                    console.log(document.querySelector('#message'))
+                    document.querySelector('#overlay-message').style.display = 'block';
+                    document.querySelector('#modal-message').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                document.querySelector('#message').textContent = "Ошибка создания статьи, попробуйте ещё раз!";
+                clearForm();
+                console.log(document.querySelector('#message'))
+                document.querySelector('#overlay-message').style.display = 'block';
+                document.querySelector('#modal-message').style.display = 'block';
+            });
+    }
+    function uploadImage() {
+        var fileInput = document.getElementById('imageInput');
+        var file = fileInput.files[0];
+        if (!file) {
+            alert('Вы не выбрали картинку!');
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/rental-properties/article/image', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                imageUrlInput.value = data.location;
+            })
+            .catch(error => {
+                document.querySelector('#message').textContent = "Ошибка создания статьи, попробуйте ещё раз!";
+                fileInput.value=''
+                console.log(document.querySelector('#message'))
+                document.querySelector('#overlay-message').style.display = 'block';
+                document.querySelector('#modal-message').style.display = 'block';
+            });
+    }
+</script>
+</body>
+
+</html>

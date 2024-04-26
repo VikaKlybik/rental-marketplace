@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <title>Работа с объявлением</title>
+    <style>
+        #myMap {
+            width: 600px;
+            height: 400px;
+        }
+    </style>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script th:src="@{/js/maps.js}"></script>
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+
+<main>
+    <div class="container-fluid px-5 mt-4">
+        <form method="post" th:action="@{/property/create}" th:object="${property}">
+            <input th:field="*{id}" type="hidden">
+
+            <div class="row" id="propertyInfo">
+                <div class="col-lg-4">
+                    <div class="property-info">
+                        <h4>Оставьте информацию об объявлении</h4>
+                        <p>Заполните поля всеми необходимыми данными, для того, чтобы объявление было популярно!</p>
+                        <th:block th:if="${property.id}">
+                            <a class="link" th:href="@{/property/{id}(id=${property.id})}">Вернуться обратно на страницу объекта</a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="add-property-wrap">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="review-form">
+                                    <label>Загаловок объявления</label>
+                                    <input class="form-control" placeholder="Введите заголовок" th:field="*{title}"
+                                           type="text">
+                                    <p class="alert alert-danger" th:errors="*{title}"
+                                       th:if="${#fields.hasErrors('title')}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="review-form">
+                                    <label>Категория объявления</label>
+                                    <th:block th:if="${property.id != null}">
+                                        <input th:field="*{propertyCategoryId}" type="hidden">
+                                    </th:block>
+                                    <select class="form-control" id="propertyCategoryId2" name="propertyCategoryId"
+                                            th:disabled="${property.id != null}" th:field="*{propertyCategoryId}">
+                                        <option th:each="type : ${propertyCategories}"
+                                                th:selected="${type.id == property.propertyCategoryId}"
+                                                th:text="${type.name}"
+                                                th:value="${type.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="review-form">
+                                    <label>Цена</label>
+                                    <input class="form-control" placeholder="Введите цену" step="0.01"
+                                           th:field="*{price}" type="number">
+                                    <p class="alert alert-danger" th:errors="*{price}"
+                                       th:if="${#fields.hasErrors('price')}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="description">Описание:</label>
+                            <textarea class="form-control" id="description" name="description"
+                                      placeholder="Оставьте здесь описание" th:field="*{description}"></textarea>
+                            <p class="alert alert-danger" th:errors="*{description}"
+                               th:if="${#fields.hasErrors('description')}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 offset-md-6 text-right mt-1">
+                <button class="btn btn-primary" type="submit">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+
+</html>

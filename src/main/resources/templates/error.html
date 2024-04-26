@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:insert = "fragments/title :: headerFiles"/>
+    <title th:text="${errorDetails.statusCode()}"></title>
+</head>
+<body>
+<header th:insert = "fragments/header :: header"> </header>
+
+<main>
+    <div class="container ">
+        <h1 class="display-4 text-danger" th:text = "${errorDetails.message()}"></h1>
+        <p class="lead" th:text = "${errorDetails.description()}"></p>
+        <a class="btn btn-primary btn-block mb-3" style="height: 50px;" th:href="@{/}">Вернуться на главную страницу</a>
+    </div>
+</main>
+
+<footer th:insert = "fragments/footer :: footer"> </footer>
+
+</body>
+
+</html>
