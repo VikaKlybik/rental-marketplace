@@ -58,15 +58,25 @@ function sendRequestAuth(event) {
     })
         .then(response => response.json()) // Parse the response as JSON
         .then(data => {
-            location.reload();
+        if(data.statusCode!==400) {
+
+           location.reload();
+        } else {
+        document.querySelector('#message').textContent = data.message;
+                    clearForm();
+                    console.log(document.querySelector('#message'))
+                    document.querySelector('#overlay-message').style.display = 'block';
+                    document.querySelector('#modal-message').style.display = 'block';
+                    console.error(data); // Handle any errors that occur during the AJAX request
+        }
         })
-        .catch(error => {
-            document.querySelector('#message').textContent = "Неверно введены данные";
+        .catch((error, data) => {
+            document.querySelector('#message').textContent = data.message;
             clearForm();
             console.log(document.querySelector('#message'))
             document.querySelector('#overlay-message').style.display = 'block';
             document.querySelector('#modal-message').style.display = 'block';
-            console.error(error); // Handle any errors that occur during the AJAX request
+            console.error(data); // Handle any errors that occur during the AJAX request
         });
 }
 const closeModalButton = document.querySelector('#close-modal-message');

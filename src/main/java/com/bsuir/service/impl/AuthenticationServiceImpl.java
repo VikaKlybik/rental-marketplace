@@ -10,6 +10,7 @@ import com.bsuir.entity.Role;
 import com.bsuir.entity.User;
 import com.bsuir.entity.UserDetails;
 import com.bsuir.exception.DuplicateException;
+import com.bsuir.exception.PhoneRegexException;
 import com.bsuir.exception.RoleNotFoundException;
 import com.bsuir.exception.UserNotFoundException;
 import com.bsuir.repository.BookmarkRepository;
@@ -53,6 +54,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         if(userRepository.existsByUserDetailsPhone(request.getPhone())) {
             throw new DuplicateException("Ошибка! Телефон уже занят.");
+        }
+        if(!request.getPhone().matches("\\+375\\d{9}")) {
+            throw new PhoneRegexException("Телефон не указан в правильном формате! '+375#########'");
         }
 
         UserDetails userDetail = UserDetails.builder()

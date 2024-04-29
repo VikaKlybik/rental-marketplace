@@ -1,0 +1,69 @@
+spring:
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: jdbc:mysql://localhost:3306/rental-properties
+    schemas: rental-properties
+    default-schema: rental-properties
+    user: root
+    password:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password:
+    url: jdbc:mysql://localhost:3306/rental-properties
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: harry.potter1748325@gmail.com
+    password: epkefxxoluytxish
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+          auth: true
+
+server:
+  port: 9191
+  servlet:
+    context-path: /rental-properties
+logging:
+  level:
+    org:
+      flywaydb: DEBUG
+
+google:
+  credentials:
+    folder:
+      path: classpath:tokens
+  service:
+    application:
+      name: Property-storage-project
+    account:
+      key: classpath:keys/client-secret-google-drive.json
+    user:
+      id: 490852614128-n099eg7lrpdlf07ut21386v29l02pp0g.apps.googleusercontent.com
+    folder:
+      article:
+        images:
+          id: 1_Qu6hOA-L6BjWTnL61_fuStHuECTUoCU
+      user:
+        icon:
+          id: 1aOibC1PBVB5G5GMZGQbc1IFdrrzJeYbb
+      property:
+        images:
+          id: 1DvWA1w-KEewX4UVCT-z_80ELPlkIC-nf
+
+stripe:
+  public:
+    key: pk_test_51O4nWhDIGB8j2Rh0T3BY6TDGaNhaAWR1g6fqXTCNO6MWwXZWeNdveaHO8zEFvITFhRadrlUzOWY7AVSTGKcW4nii00aOpLdSk4
+  secret:
+    key: sk_test_51O4nWhDIGB8j2Rh0Kv8QJl9JFjtztrEcm4iABBZbJLmwloNTh9SRZ7StaWtuV4BZlgKQMS0kijvaQPaIdDdCDf5800M6ssRmHr

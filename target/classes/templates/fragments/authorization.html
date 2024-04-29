@@ -1,0 +1,79 @@
+<th:block th:fragment = "authorization">
+    <div id="modal-overlay">
+        <div id="modal">
+            <button id="modal-close">&times;</button>
+            <div id="modal-content">
+                <div class="section">
+                    <div class="container">
+                        <div class="row full-height justify-content-center">
+                            <div class="col-12 text-center align-self-center py-5">
+                                <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                                    <h6 class="mb-0 pb-3"><span>Log in </span><span>Sign up</span></h6>
+                                    <input class="checkbox" type="checkbox" id="reg-log" name="reg-log"/>
+                                    <label for="reg-log"></label>
+                                    <div class="card-3d-wrap mx-auto">
+                                        <div class="card-3d-wrapper">
+                                            <div class="card-front">
+                                                <div class="center-wrap">
+                                                    <div class="section text-center">
+                                                        <form id="login-form" th:action="@{/auth/authentication}" method="post">
+                                                            <h4 class="mb-4 pb-3">Log in</h4>
+                                                            <div class="form-group">
+                                                                <input type="username" name="username" class="form-style" placeholder="Логин" id="username" autocomplete="off" required>
+                                                                <i class="input-icon uil uil-at"></i>
+                                                            </div>
+                                                            <div class="form-group mt-2">
+                                                                <input type="password" name="password" class="form-style" placeholder="Пароль" id="password" autocomplete="off" required>
+                                                                <i class="input-icon uil uil-lock-alt"></i>
+                                                            </div>
+                                                            <button type="submit" class="btn mt-4">Подтвердить</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-back">
+                                                <div class="center-wrap">
+                                                    <div class="section text-center">
+                                                        <form id="signup-form" th:action="@{/auth/register}" method="post">
+                                                            <h4 class="mb-4 pb-3">Sign up</h4>
+                                                            <div class="form-group">
+                                                                <input type="text" name="firstName" class="form-style" placeholder="Имя" id="regfirstname" autocomplete="off" required>
+                                                                <i class="input-icon uil uil-user"></i>
+                                                            </div>
+                                                            <div class="form-group mt-2">
+                                                                <input type="text" name="lastName" class="form-style" placeholder="Фамилия" id="reglastname" autocomplete="off" required>
+                                                                <i class="input-icon uil uil-user"></i>
+                                                            </div>
+                                                            <div class="form-group mt-2">
+                                                                <input type="text" name="username" class="form-style" placeholder="Логин" id="regusername" autocomplete="off" required>
+                                                                <i class="input-icon uil uil-user"></i>
+                                                            </div>
+                                                            <div class="form-group mt-2">
+                                                                <input type="email" name="email" class="form-style" placeholder="Электронная почта" id="regemail" autocomplete="off" required>
+                                                                <i class="input-icon uil uil-at"></i>
+                                                            </div>
+                                                            <div class="form-group mt-2">
+                                                                <input type="phone" name="phone" class="form-style" placeholder="Телефон" id="regphone" autocomplete="off" pattern="+375\d{9}" required>
+                                                                <i class="input-icon uil uil-at"></i>
+                                                            </div>
+                                                            <div class="form-group mt-2">
+                                                                <input type="password" name="password" class="form-style" placeholder="Пароль" id="regpassword" autocomplete="off" required>
+                                                                <i class="input-icon uil uil-lock-alt"></i>
+                                                            </div>
+                                                            <button type="submit" class="btn mt-4">Подтвердить</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/auth.js}"></script>
+</th:block>

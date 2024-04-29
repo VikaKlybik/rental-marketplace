@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <title>Мои избранные объявления</title>
+    <style>
+        #myMap {
+            width: 100%; /* Set map width to 100% of its container */
+            height: 500px; /* Set map height to 500 pixels */
+        }
+    </style>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script th:src="@{/js/maps.js}"></script>
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+
+<main>
+    <div class="container-fluid px-5 mt-4 d-flex align-items-center justify-content-center" >
+        <div class="col-lg-8 table-responsive mb-5 text-center">
+            <table class="table table-bordered text-center mb-0">
+                <thead class="bg-secondary text-dark">
+                <tr>
+                    <th>Объявление</th>
+                    <th>Удалить</th>
+                </tr>
+                </thead>
+                <tbody class="align-middle">
+                <!-- Create a table row (tr) for the cart item -->
+                <tr th:each="property: ${bookmarkProperty}">
+                    <td>
+                        <a class="link" th:href="@{/property/{id}(id=${property.id})}" th:text="${property.title}">
+                        </a>
+                    </td>
+
+                    <td class="align-middle">
+                        <a class="btn btn-sm btn-primary" th:href="@{/bookmark/delete/{id}(id=${property.id})}">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+
+</body>
+
+</html>

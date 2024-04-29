@@ -1,0 +1,119 @@
+<div th:fragment="header">
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark py-3 px-lg-5 d-none d-lg-block">
+        <div class="row">
+            <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-body pr-3" href=""><i class="fa fa-phone-alt mr-2"></i>+375 (25) 789-45-55</a>
+                    <span class="text-body">|</span>
+                    <a class="text-body px-3" href=""><i class="fa fa-envelope mr-2"></i>house.harbor@gmail.com</a>
+                </div>
+            </div>
+            <div class="col-md-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-body px-3" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-body px-3" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-body px-3" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-body px-3" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-body pl-3" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a class="text-body pl-3" th:href="@{/bookmark}" th:if="${bookmarkSize != null}">
+                        <i class="fas fa-heart"><span class="badge badge-danger" th:text="${bookmarkSize}"></span></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid position-relative nav-bar p-0">
+        <div class="position-relative px-lg-5" style="z-index: 9;">
+            <nav class="navbar navbar-expand-lg bg-secondary navbar-dark py-3 py-lg-0 pl-3 pl-lg-5">
+                <a class="navbar-brand" th:href="@{/home}">
+                    <h1 class="text-uppercase text-primary mb-1">House Harbor</h1>
+                </a>
+                <button class="navbar-toggler" data-target="#navbarCollapse" data-toggle="collapse" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
+                    <div class="navbar-nav ml-auto py-0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-3">
+                                    <a class="nav-item nav-link" th:href="@{/home}">Главная</a>
+                                </div>
+                                <div class="col-md-4 col-lg-3">
+                                    <a class="nav-item nav-link" th:href="@{/property}">Наши объявления</a>
+                                </div>
+                                <div class="col-md-4 col-lg-3">
+                                    <a class="nav-item nav-link" th:href="@{/article}">Статьи</a>
+                                </div>
+                                <th:block sec:authorize="hasAuthority('USER') && !hasAuthority('MANAGER')">
+                                    <div class="col-md-4 col-lg-3">
+                                        <a class="nav-item nav-link" th:href="@{/property/user/own}">Мои объявления</a>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <a class="nav-item nav-link" th:href="@{/chat}">Чат</a>
+                                    </div>
+                                </th:block>
+                                <th:block sec:authorize="hasAuthority('MANAGER')">
+                                    <div class="col-md-4 col-lg-3">
+                                        <a class="nav-item nav-link" th:href="@{/article/create}">Создание статьи</a>
+                                    </div>
+                                </th:block>
+                                <th:block sec:authorize="isAuthenticated()">
+                                    <div class="col-md-4 col-lg-3">
+                                        <a class="nav-item nav-link" id="log-out" onclick="logOut(event)"
+                                           th:href="@{/auth/logout}">Выход из учётной записи</a>
+                                    </div>
+                                    <div class="col-md-4 col-lg-3">
+                                        <a class="nav-item nav-link" id="myAccount"
+                                           th:href="@{/user-info}">Мой аккаунт</a>
+                                    </div>
+                                </th:block>
+                                <th:block sec:authorize="isAnonymous()">
+                                    <div class="col-md-4 col-lg-3">
+                                        <a class="nav-item nav-link" id="modal-btn" onclick="openAuthModal(event)"
+                                           th:href="@{/auth}">Авторизация</a>
+                                    </div>
+                                </th:block>
+                                <th:block sec:authorize="hasAuthority('ADMIN')">
+                                    <div class="col-md-4 col-lg-3">
+                                        <a class="nav-item nav-link" th:href="@{/admin}">Админ</a>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+    <div class="container-fluid bg-white pt-3 px-lg-5">
+        <form th:action="@{/property}">
+            <div class="row mx-n2">
+                <div class="col-xl-10 col-lg-4 col-md-6 px-2">
+                    <input class="form-control p-4" id="carSearch" name="search" placeholder="Найти объявление"
+                           th:value="${param.search != null} ? ${param.search} : ''" type="text">
+                </div>
+                <div class="col-xl-2 col-lg-4 col-md-6 px-2">
+                    <button class="btn btn-primary btn-block mb-3" style="height: 50px;" type="submit">Поиск</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Search End -->
+</div>

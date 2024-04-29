@@ -38,6 +38,15 @@ public class GlobalExceptionHandler {
         return "error";
     }
 
+    @ExceptionHandler(PropertyCreateNotAllowException.class)
+    public String handlePropertyCreateNotAllowException(Exception exception, Model model) {
+        ErrorDetails errorDetails = new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "400 - Ошибка",
+                exception.getMessage());
+        model.addAttribute("errorDetails", errorDetails);
+        return "error";
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public String handleForbiddenException(AccessDeniedException e, Model model) {
         ErrorDetails errorDetails = new ErrorDetails(HttpStatus.FORBIDDEN.value(),
@@ -47,12 +56,12 @@ public class GlobalExceptionHandler {
         return "error";
     }
 
-    @ExceptionHandler({DuplicateException.class, PropertyCreateNotAllowException.class})
+    @ExceptionHandler({DuplicateException.class, PhoneRegexException.class})
     @ResponseBody
     public ErrorDetails handleDuplicateException(Exception exception) {
         return ErrorDetails.builder()
                 .description(exception.getMessage())
-                .statusCode(HttpStatus.CONTINUE.value())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .message(exception.getMessage())
                 .build();
     }

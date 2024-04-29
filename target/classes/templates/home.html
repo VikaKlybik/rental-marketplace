@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert = "fragments/title :: headerFiles"/>
+    <title>Home Page</title>
+</head>
+<body>
+<header th:insert = "fragments/header :: header"> </header>
+
+<main>
+    <!-- Carousel Start -->
+    <div class="container-fluid p-0" style="margin-bottom: 90px;"  id="carousel">
+        <div id="header-carousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item ">
+                    <img class="w-100" th:src="@{img/resources/carousel-1.jpg}" alt="Image">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <div class="p-3" style="max-width: 900px;">
+                            <h4 class="text-white text-uppercase mb-md-3">Находи объевление именно для себя</h4>
+                            <h1 class="display-1 text-white mb-md-4">Качество и комфорт</h1>
+                            <a th:href="@{/property}" class="btn btn-primary py-md-3 px-md-5 mt-2">Напиши владельцу сейчас</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item active" >
+                    <img class="w-100" th:src="@{img/resources/carousel-2.jpg}" alt="Image">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <div class="p-3" style="max-width: 900px;">
+                            <h4 class="text-white text-uppercase mb-md-3">Находи объевление именно для себя</h4>
+                            <h1 class="display-1 text-white mb-md-4">Качество и комфорт</h1>
+                            <a th:href="@{/property}" class="btn btn-primary py-md-3 px-md-5 mt-2">Напиши владельцу сейчас</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
+                <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                    <span class="carousel-control-prev-icon mb-n2"></span>
+                </div>
+            </a>
+            <a class="carousel-control-next" href="#header-carousel" data-slide="next">
+                <div class="btn btn-dark" style="width: 45px; height: 45px;">
+                    <span class="carousel-control-next-icon mb-n2"></span>
+                </div>
+            </a>
+        </div>
+    </div>
+    <!-- Carousel End -->
+
+
+    <!-- About Start -->
+    <div class="container-fluid py-5">
+        <div class="container pt-5 pb-3">
+            <h1 class="display-4 text-uppercase text-center mb-5">Добро пожаловать в <span class="text-primary">House Harbor</span></h1>
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <img class="w-75 mb-4" th:src="@{/img/resources/about.png}" alt="">
+                    <p>House Harbor - ваш партнер в мире недвижимости. Наш сайт предлагает широкий выбор объектов недвижимости для покупки, продажи и аренды. Мы стремимся обеспечить наших клиентов легким доступом к качественным и разнообразным предложениям по всему миру. Независимо от того, ищете ли вы свой идеальный дом, инвестиционную возможность или жилье для аренды, House Harbor поможет вам найти идеальное решение для ваших потребностей в недвижимости.</p>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-lg-4 mb-2">
+                    <div class="d-flex align-items-center bg-light p-4 mb-4" style="height: 150px;">
+                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary ml-n4 mr-4" style="width: 100px; height: 100px;">
+                            <i class="fa fa-2x fa-headset text-secondary"></i>
+                        </div>
+                        <h4 class="text-uppercase m-0">24/7 поддержка</h4>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-2">
+                    <div class="d-flex align-items-center bg-secondary p-4 mb-4" style="height: 150px;">
+                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary ml-n4 mr-4" style="width: 100px; height: 100px;">
+                            <i class="fa-solid fa-house text-secondary"  style="font-size: 2em;"></i>
+                        </div>
+                        <h4 class="text-light text-uppercase m-0">Выбери любую недвижимость, которая тебе необходима</h4>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-2">
+                    <div class="d-flex align-items-center bg-light p-4 mb-4" style="height: 150px;">
+                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary ml-n4 mr-4" style="width: 100px; height: 100px;">
+                            <i class="fa fa-2x fa-map-marker-alt text-secondary"></i>
+                        </div>
+                        <h4 class="text-uppercase m-0">Посмотри местонахождение прямо на карте</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
+
+    <!-- Rent A Car Start -->
+    <div class="container-fluid py-5">
+        <div class="container pt-5 pb-3">
+            <h1 class="display-4 text-uppercase text-center mb-5">Найди свою недвижимость</h1>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-2" th:each="property :${properties}">
+                    <div class="rent-item mb-4">
+                        <img alt="" class="img-fluid mb-4"
+                             th:if="${property.imageList.size()>0}"
+                             th:src="@{/image/{id}(id=${property.imageList.get(0).url})}">
+                        <img alt="" class="img-fluid mb-4"
+                             src="https://clipart-library.com/images/8cAEyXaXi.gif"
+                             th:if="${property.imageList.size() == 0}">
+                        <h4 class="text-uppercase mb-4" style="height: 70px" th:text="${property.title}"></h4>
+                        <div class="d-flex justify-content-center mb-4" style="height: 70px">
+                            <div class="px-2">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span th:text="${property.geolocationData.country + ', ' + property.geolocationData.address}"></span>
+                            </div>
+                            <div class="px-2 border-left border-right">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                <span th:text="${#temporals.format(property.createdAt, 'HH:mm dd MMM yyyy')}"></span>
+                            </div>
+                        </div>
+                        <a class="btn btn-primary px-3" th:href="@{/property/{id}(id = ${property.id})}"
+                           th:text="${property.price.toString()} + ' $'"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:insert = "fragments/footer :: footer"> </footer>
+</body>
+
+</html>

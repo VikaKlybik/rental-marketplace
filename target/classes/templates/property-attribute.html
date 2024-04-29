@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="fragments/title :: headerFiles"/>
+    <title>Работа с объявлением</title>
+    <style>
+        #myMap {
+            width: 600px;
+            height: 400px;
+        }
+    </style>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=98850ad7-3b9d-409c-8b28-88599545e36e&lang=ru_RU"
+            type="text/javascript"></script>
+    <script th:src="@{/js/maps.js}"></script>
+</head>
+<body>
+<header th:insert="fragments/header :: header"></header>
+
+<main>
+    <div class="container-fluid px-5 mt-4">
+        <div class="row" id="propertyDetails">
+            <div class="col-lg-4">
+                <div class="property-info">
+                    <h4>Заполните поля характеристик</h4>
+                    <p>Выберите необходимые для вас и заполните их</p>
+                    <th:block th:if="${property.id}">
+                        <a class="link" th:href="@{/property/{id}(id=${property.id})}">Вернуться обратно на страницу объекта</a>
+                    </th:block>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="add-property-wrap">
+                    <form method="post" th:each="attribute: ${attributeList}">
+                        <div class="row">
+                            <input name="attributeId" th:value="${attribute.id}" type="hidden">
+                            <div class="col-md-7">
+                                <div class="review-form">
+                                    <label th:text="${attribute.name}" th:for="${attribute.id}"></label>
+                                    <th:block th:if="${attribute.dataType == T(com.bsuir.enums.Datatype).BOOLEAN}">
+                                        <select name="attributeValue" class="form-control" th:id="${attribute.id}" >
+                                            <option value="Нет">Нет</option>
+                                            <option value="Да">Да</option>
+                                        </select>
+                                    </th:block>
+                                    <th:block th:if="${attribute.dataType == T(com.bsuir.enums.Datatype).STRING}">
+                                        <input class="form-control" name="attributeValue"
+                                               type="text">
+                                    </th:block>
+                                    <th:block th:if="${attribute.dataType == T(com.bsuir.enums.Datatype).NUMBER}">
+                                        <input class="form-control" name="attributeValue"
+                                               type="number"
+                                                step="0.1"
+                                                min="0.1">
+                                    </th:block>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" style="position: absolute; bottom: 0" type="submit">
+                                    Сохранить
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr class="my-4">
+                    <h5>Заполненные параметры</h5>
+                    <form method="post" th:each="attributeValue: ${attributeValueList}">
+                        <div class="row">
+                            <input name="attributeId" th:value="${attributeValue.attribute.id}" type="hidden">
+                            <div class="col-md-7">
+                                <div class="review-form">
+                                    <label th:text="${attributeValue.attribute.name}"></label>
+                                    <input class="form-control" name="attributeValue"
+                                           th:value="${attributeValue.value}"
+                                           type="text">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" style="position: absolute; bottom: 0" type="submit">
+                                    Сохранить
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:insert="fragments/footer :: footer"></footer>
+<script>
+    document.querySelectorAll('form').forEach((form) => {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            let formData = {};
+            Array.from(this.elements).forEach(element => {
+                if (element.name) {
+                    formData[element.name] = element.value;
+                }
+            });
+
+            // Convert the form data object to JSON
+            let jsonData = JSON.stringify(formData);
+
+            fetch(window.location.href, {
+                method: this.method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+                .then(response => {
+                    document.querySelector('#message').textContent = "Параметр успешно сохранён!";
+                    document.querySelector('#overlay-message').style.display = 'block';
+                    document.querySelector('#modal-message').style.display = 'block';
+                })
+                .catch(error => {
+                    document.querySelector('#message').textContent = "Ошибка соединения с сервером. Попробуйте позже!";
+                    document.querySelector('#overlay-message').style.display = 'block';
+                    document.querySelector('#modal-message').style.display = 'block';
+                    console.error(error);
+                });
+        })
+    })
+
+</script>
+</body>
+
+</html>
